@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "figma": {
+      "type": "http",
+      "url": "https://mcp.figma.com/mcp"
+    },
+    "figma-a11y": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${CLAUDE_PROJECT_DIR}/dist/server.js"],
+      "env": {
+        "FIGMA_TOKEN": "${FIGMA_TOKEN}"
+      }
+    }
+  }
+}

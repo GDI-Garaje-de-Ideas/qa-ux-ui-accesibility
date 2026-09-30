@@ -1,0 +1,31 @@
+{
+  "name": "figma-a11y-mcp",
+  "version": "0.1.0",
+  "description": "Servidor MCP que audita diseños de Figma contra reglas de accesibilidad WCAG 2.2 (contraste, tamaños, áreas táctiles) y skill de Claude Code para el análisis semántico.",
+  "type": "module",
+  "private": true,
+  "main": "dist/server.js",
+  "bin": {
+    "figma-a11y-mcp": "dist/server.js"
+  },
+  "scripts": {
+    "build": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+    "dev": "node --import tsx src/server.ts",
+    "test": "node --import tsx --test \"src/**/*.test.ts\"",
+    "audit": "node --import tsx src/cli.ts",
+    "report": "node --import tsx src/report/cli.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
