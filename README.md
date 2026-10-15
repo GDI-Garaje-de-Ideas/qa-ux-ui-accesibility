@@ -54,7 +54,7 @@ Sale con código 1 si hay errores, así que sirve como comprobación en CI.
 | `audit_figma_node` | `url`, `level` (AA/AAA), `minFontSizePx` | `summary`, `findings[]`, `textLayers[]`, `interactiveElements[]`, `notes[]`. Si el enlace no tiene node-id, lista páginas y frames. |
 | `check_contrast` | `foreground`, `background`, `fontSizePx?`, `fontWeight?`, `level` | Ratio, umbral requerido y si pasa. |
 | `list_a11y_rules` | ninguna | Catálogo de reglas deterministas. |
-| `build_html_report` | `review` (veredicto, incidencias con `nodeIds`, problema y solución, revisión semántica, comprobaciones manuales, recomendaciones), `outDir?` | Escribe `reports/<fecha>-<frame>.html` y devuelve la ruta. |
+| `build_html_report` | `review` (veredicto, incidencias con `nodeIds`, problema y solución, revisión semántica, comprobaciones manuales, recomendaciones), `outDir?` | Escribe `reports/<fecha>-<frame>-<node-id>.html` y devuelve la ruta. |
 
 Cada finding incluye `rule`, `wcag`, `severity`, `nodeId`, `nodePath`, `link` directo al nodo, valores medidos y una sugerencia.
 

@@ -54,7 +54,11 @@ cubre < 5 %                       → se ignora (no está debajo)
 es imagen o degradado             → INCIERTO (no hay un único color)
 es una forma, o cubre < 98 %      → INCIERTO (parte del texto está sobre otra cosa)
 es un sólido que cubre ≥ 98 %     → se mezcla con compositeOver sobre el color acumulado
+  … y además es opaco             → TAPA todo lo anterior: el color pasa a ser el suyo
+                                    y se borra la incertidumbre acumulada
 ```
+
+El último caso se añadió tras auditar Club Nexo: un tag o un botón con relleno opaco colocado sobre una foto daba `background-uncertain` aunque su texto se apoyara en el relleno del propio tag. Ahora se mide con normalidad. Un texto que se apoya directamente sobre la foto sigue siendo comprobación manual.
 
 El resultado lleva dos banderas que el informe respeta al pie de la letra:
 

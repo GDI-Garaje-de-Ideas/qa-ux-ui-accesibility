@@ -10,7 +10,7 @@ import { reportReviewSchema, type ReportReviewInput } from "./schema.js";
 export interface BuildReportOptions {
   /** Carpeta de salida; por defecto `reports/` bajo el directorio de trabajo. */
   outDir?: string;
-  /** Nombre de archivo; por defecto `<AAAA-MM-DD>-<frame-slug>.html`. */
+  /** Nombre de archivo; por defecto `<AAAA-MM-DD>-<frame-slug>-<node-id>.html`. */
   fileName?: string;
   token?: string;
   now?: Date;
@@ -63,7 +63,8 @@ export async function buildHtmlReport(reviewInput: ReportReviewInput, opts: Buil
   const now = opts.now ?? new Date();
   const html = renderHtmlReport({ review, audit, root, image, generatedAt: now });
   const outDir = path.resolve(opts.outDir ?? "reports");
-  const name = opts.fileName ?? `${now.toISOString().slice(0, 10)}-${slug(root.name)}.html`;
+  // El id del nodo evita que dos frames con el mismo nombre se sobrescriban el informe.
+  const name = opts.fileName ?? `${now.toISOString().slice(0, 10)}-${slug(root.name)}-${slug(parsed.nodeId)}.html`;
   const outPath = path.join(outDir, name);
   await mkdir(outDir, { recursive: true });
   await writeFile(outPath, html, "utf8");

@@ -9,3 +9,4 @@ Servidor MCP (TypeScript, ESM, Node 20+) que audita accesibilidad WCAG 2.2 en no
 - Las cajas de la API se normalizan con `normalizeAutoLayout` (`src/figma/layout.ts`) antes de auditar, porque pueden llegar desactualizadas dentro de instancias. Usa el árbol normalizado en cualquier código nuevo que dependa de posiciones.
 - El informe HTML vive en `src/report/`: `schema.ts` define la revisión que escribe el skill y `html.ts` la renderiza como función pura (tests en `html.test.ts`). Las mediciones del informe salen siempre del motor, nunca de la revisión.
 - No guardes tokens de Figma en el repo; `FIGMA_TOKEN` viene del entorno.
+- Preguntar si se han definido las variables de entorno que son necesarias para su ejecución.

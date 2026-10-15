@@ -109,6 +109,6 @@ npm run report -- revision.json            # con tsx, desde src/
 node dist/report/cli.js revision.json      # desde el código compilado
 ```
 
-La salida va a `reports/<AAAA-MM-DD>-<frame>.html` (`slug` quita acentos y símbolos del nombre del frame). Necesita `FIGMA_TOKEN` en el entorno.
+La salida va a `reports/<AAAA-MM-DD>-<frame>-<node-id>.html` (`slug` quita acentos y símbolos). El node-id evita que dos frames con el mismo nombre se sobrescriban. Necesita `FIGMA_TOKEN` en el entorno.
 
 Siguiente: [Servidor MCP y skill](08-servidor-mcp-y-skill.md).

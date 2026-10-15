@@ -87,6 +87,28 @@ test("texto sobre imagen se marca como comprobación manual, no como error", () 
   assert.equal(r.findings.some((f) => f.rule === "image-alt" && f.nodeId === "8:1"), true);
 });
 
+test("una capa opaca sobre una imagen tapa la imagen: el texto encima se mide con normalidad", () => {
+  // Caso real: botón "Más info" con relleno blanco sobre la foto de cabecera.
+  const hero: FigmaNode = {
+    id: "8:10", name: "Header", type: "FRAME", fills: [{ type: "IMAGE", imageRef: "abc" }], absoluteBoundingBox: box(0, 0, 400, 300),
+    children: [
+      {
+        id: "8:11", name: "_state-light-tonal", type: "FRAME", fills: [solid("#FFFFFF")], absoluteBoundingBox: box(20, 200, 100, 40),
+        children: [text("8:12", "Más info", "Más info", "#282825", 16, 700, box(36, 210, 68, 20))],
+      },
+      text("8:13", "Claim", "Sobre la foto", "#FFFFFF", 16, 400, box(20, 20, 200, 20)),
+    ],
+  };
+  const r = run([hero]);
+  const masInfo = r.textLayers.find((t) => t.nodeId === "8:12")!;
+  assert.equal(masInfo.backgroundUncertain, false);
+  assert.equal(masInfo.background, "#FFFFFF");
+  assert.equal(masInfo.contrast, 14.78);
+  assert.equal(r.findings.some((f) => f.rule === "background-uncertain" && f.nodeId === "8:12"), false);
+  // Un texto directamente sobre la foto sigue siendo comprobación manual.
+  assert.equal(r.findings.some((f) => f.rule === "background-uncertain" && f.nodeId === "8:13"), true);
+});
+
 test("capas ocultas y texto pequeño", () => {
   const r = run([
     { ...text("9:1", "Oculto", "No visible", "#EEEEEE", 10, 400), visible: false },

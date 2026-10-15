@@ -173,7 +173,9 @@ const PARTIAL_THRESHOLD = 0.05;
  *     (COVER_THRESHOLD) también se marca incierto: parte del texto estaría sobre otra cosa.
  *   - Si es un sólido que cubre el target por completo se compone sobre el color
  *     acumulado con compositeOver y se apunta el hex resultante en `stack`. Si además su
- *     alfa es prácticamente 1 se recuerda que hemos encontrado una capa opaca.
+ *     alfa es prácticamente 1, tapa todo lo anterior: el color pasa a ser el suyo y se
+ *     borran la incertidumbre y las razones acumuladas (una imagen bajo un tag opaco no
+ *     afecta al contraste del texto del tag).
  *
  * Al terminar, `assumed` es true si ninguna capa opaca cubría el target (el blanco inicial
  * es una suposición, no un dato) y `uncertain` es true si intervino alguna capa no
@@ -214,9 +216,19 @@ export function resolveBackground(target: FigmaRect, painted: PaintedLayer[], ex
       continue;
     }
 
-    color = compositeOver(layer.color, color);
+    if (layer.color.a >= 0.999) {
+      // Una capa opaca que cubre el elemento tapa todo lo anterior: imágenes, degradados o
+      // formas parciales de debajo dejan de influir en el contraste (p. ej. un tag con
+      // relleno propio sobre una foto).
+      color = { r: layer.color.r, g: layer.color.g, b: layer.color.b };
+      stack.length = 0;
+      reasons.length = 0;
+      uncertain = false;
+      foundOpaque = true;
+    } else {
+      color = compositeOver(layer.color, color);
+    }
     stack.push(hexOf(color));
-    if (layer.color.a >= 0.999) foundOpaque = true;
   }
 
   return { color, stack, assumed: !foundOpaque, uncertain, reasons };
