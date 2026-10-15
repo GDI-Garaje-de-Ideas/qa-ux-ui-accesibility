@@ -22,7 +22,7 @@ Ejemplo: avisar de textos con `letterSpacing` negativo.
    ```
 4. **Test**: en `src/rules/engine.test.ts`, crea un árbol mínimo con un texto que falle y otro que pase, y comprueba el resultado. Fíjate en los helpers `text()`, `solid()` y `run()` del principio del archivo.
 5. **Documenta**: `README.md`, `SKILL.md` (si Claude debe revisar algo relacionado) y el capítulo 6 de esta carpeta.
-6. `npm test` → `npm run build` → `/mcp` para reconectar.
+6. `npm test` → `npm run build:skill` (y `npm run build` si usas el servidor MCP de desarrollo).
 7. Si la regla afecta al informe, añade su nombre legible en `RULE_LABEL` (`src/report/html.ts`).
 
 ## 10.3 Depurar un frame que da resultados raros
@@ -66,7 +66,7 @@ A.forEach((n, i) => { const p = n.absoluteBoundingBox, q = B[i].absoluteBounding
 ## 10.5 Antes de dar un cambio por terminado
 
 - [ ] `npm test` en verde.
-- [ ] `npm run build` sin errores.
+- [ ] `npm run build:skill` sin errores (con `bin/` regenerado).
 - [ ] Si tocaste una regla: caso nuevo en `engine.test.ts`, y `RULES`, README y SKILL.md sincronizados.
 - [ ] Si tocaste posiciones o geometría: usas el árbol normalizado.
 - [ ] Si tocaste el HTML: todo texto externo pasa por `esc()`, y lo has revisado en el navegador (claro y oscuro).

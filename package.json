@@ -13,7 +13,8 @@
     "dev": "node --import tsx src/server.ts",
     "test": "node --import tsx --test \"src/**/*.test.ts\"",
     "audit": "node --import tsx src/cli.ts",
-    "report": "node --import tsx src/report/cli.ts"
+    "report": "node --import tsx src/report/cli.ts",
+    "build:skill": "node node_modules/typescript/bin/tsc -p tsconfig.json && node scripts/build-skill.mjs"
   },
   "engines": {
     "node": ">=20"
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.3",
+    "esbuild": "^0.28.2",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   }

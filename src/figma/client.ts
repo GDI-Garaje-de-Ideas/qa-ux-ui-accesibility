@@ -1,4 +1,5 @@
 import type { FigmaFileResponse, FigmaNode, FigmaNodesResponse } from "./types.js";
+import { readStoredToken } from "./token-store.js";
 
 const API = "https://api.figma.com/v1";
 
@@ -23,9 +24,12 @@ export class FigmaApiError extends Error {
  *
  * Orden de prioridad:
  *   1. El token pasado explícitamente como argumento (útil en tests o en la CLI).
- *   2. La variable de entorno FIGMA_TOKEN, que es la que rellena `.mcp.json`.
+ *   2. La variable de entorno FIGMA_TOKEN (la que rellena `.mcp.json` en desarrollo o
+ *      la que cada persona define en su `~/.zshrc`).
  *   3. La variable FIGMA_API_KEY, aceptada por compatibilidad con otros servidores MCP
  *      de Figma que usan ese nombre.
+ *   4. El token guardado con `configurar.mjs` en `~/.config/figma-a11y/token`
+ *      (ver token-store.ts). Es la vía por defecto del skill: no requiere variables.
  *
  * Si no se encuentra ninguno lanza un FigmaApiError con instrucciones de dónde crear el
  * token, de modo que el error que ve el usuario sea accionable y no un 403 genérico.
@@ -35,13 +39,34 @@ export class FigmaApiError extends Error {
  * @throws FigmaApiError si no hay ningún token disponible.
  */
 export function resolveToken(explicit?: string): string {
-  const token = explicit ?? process.env.FIGMA_TOKEN ?? process.env.FIGMA_API_KEY;
-  if (!token) {
+  const found = findToken(explicit);
+  if (!found) {
     throw new FigmaApiError(
-      "Falta el token de Figma. Define FIGMA_TOKEN (Figma > Settings > Security > Personal access tokens, con permiso de lectura de archivos)."
+      "Falta el token de Figma. Ejecuta en tu terminal `node <carpeta del skill>/bin/configurar.mjs` para guardarlo (Figma > Settings > Security > Personal access tokens, con permiso «File content: Read»)."
     );
   }
-  return token;
+  return found.token;
+}
+
+/** Origen del token encontrado, para informar al usuario sin mostrar el token. */
+export type TokenSource = "argumento" | "FIGMA_TOKEN" | "FIGMA_API_KEY" | "archivo";
+
+/**
+ * Busca el token en el mismo orden que resolveToken y devuelve también su origen.
+ * Las cadenas vacías se ignoran: una variable `${...}` sin expandir puede llegar vacía.
+ *
+ * @param explicit Token opcional pasado por el llamador.
+ * @returns Token y origen, o undefined si no hay ninguno.
+ */
+export function findToken(explicit?: string): { token: string; source: TokenSource } | undefined {
+  const candidates: [string | undefined, TokenSource][] = [
+    [explicit, "argumento"],
+    [process.env.FIGMA_TOKEN, "FIGMA_TOKEN"],
+    [process.env.FIGMA_API_KEY, "FIGMA_API_KEY"],
+  ];
+  for (const [token, source] of candidates) if (token?.trim()) return { token: token.trim(), source };
+  const stored = readStoredToken();
+  return stored ? { token: stored, source: "archivo" } : undefined;
 }
 
 /**
@@ -69,7 +94,9 @@ async function figmaGet<T>(path: string, token: string): Promise<T> {
   if (!res.ok) {
     const body = await res.text().catch(() => "");
     const hint =
-      res.status === 403
+      res.status === 401
+        ? "Token inválido o caducado: vuelve a configurarlo con configurar.mjs."
+        : res.status === 403
         ? "Token inválido o sin permiso sobre el archivo."
         : res.status === 404
           ? "Archivo o nodo no encontrado. Comprueba la clave del archivo y el node-id."
@@ -111,6 +138,20 @@ export async function fetchNodes(fileKey: string, nodeIds: string[], token: stri
     nodes.push(entry.document);
   }
   return { fileName: data.name, nodes };
+}
+
+/**
+ * Comprueba un token pidiendo a Figma los datos de su propietario (GET /v1/me).
+ *
+ * Lo usa `configurar.mjs` para validar el token antes de guardarlo y para mostrar a qué
+ * cuenta pertenece sin enseñar el token.
+ *
+ * @param token Token a comprobar.
+ * @returns Nombre de usuario y email de la cuenta.
+ * @throws FigmaApiError 401 o 403 si el token no es válido.
+ */
+export async function fetchMe(token: string): Promise<{ handle: string; email: string }> {
+  return figmaGet<{ handle: string; email: string }>("/me", token);
 }
 
 /**

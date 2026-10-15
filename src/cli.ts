@@ -13,7 +13,13 @@ if (!url) {
   process.exit(2);
 }
 
-const outcome = await auditFromUrl({ url, level });
+let outcome: Awaited<ReturnType<typeof auditFromUrl>>;
+try {
+  outcome = await auditFromUrl({ url, level });
+} catch (err) {
+  console.error(err instanceof Error ? err.message : String(err));
+  process.exit(2);
+}
 if (outcome.kind === "needs-node") {
   console.log(`Archivo "${outcome.fileName}" (${outcome.fileKey}). Añade ?node-id=<id> con uno de estos frames:`);
   for (const page of outcome.pages) {

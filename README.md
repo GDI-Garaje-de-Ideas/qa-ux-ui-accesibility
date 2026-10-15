@@ -7,7 +7,9 @@ Herramienta para detectar incumplimientos de accesibilidad (WCAG 2.2) en diseño
 | `figma-a11y` (este repo) | Reglas **deterministas** calculadas desde la REST API de Figma: contraste de texto (1.4.3 / 1.4.6), contraste no textual (1.4.11), tamaño de área táctil (2.5.8 / 2.5.5), texto pequeño, imágenes sin nombre descriptivo. | stdio, `node dist/server.js`, token personal en `FIGMA_TOKEN`. |
 | `figma` (oficial, remoto) | Captura y contexto del diseño para la revisión **semántica** (uso del color, etiquetas, jerarquía, estados, textos de enlaces). | `https://mcp.figma.com/mcp`, OAuth desde Claude Code. |
 
-El skill `/a11y-audit` orquesta ambos y escribe un informe en `reports/`.
+El skill `/a11y-audit` orquesta ambos. Audita un frame o un flujo completo de una página y genera informes HTML con capturas en `reports/`, más un índice del flujo con qué pantallas son accesibles.
+
+**¿Solo quieres usarlo?** Copia la carpeta `.claude/skills/a11y-audit/` a tu proyecto y sigue [INSTALAR.md](INSTALAR.md). No hace falta clonar ni compilar nada: lo que falte te lo pide el propio skill.
 
 ¿Acabas de llegar al proyecto? Empieza por la [documentación para el equipo](doc/README.md): conceptos, arquitectura, cada módulo explicado y recetas paso a paso.
 
@@ -17,7 +19,9 @@ El skill `/a11y-audit` orquesta ambos y escribe un informe en `reports/`.
 - Token personal de Figma con permiso de lectura de archivos: Figma > Settings > Security > Personal access tokens.
 - Claude Code con acceso al MCP remoto de Figma (disponible en todos los planes).
 
-## Instalación
+## Instalación para desarrollo
+
+Esto es para trabajar en el código. Para usarlo, ver [INSTALAR.md](INSTALAR.md).
 
 ```bash
 npm install
@@ -91,6 +95,7 @@ La REST API no dice "qué hay detrás" de una capa. El motor recorre el árbol e
 
 ```bash
 npm test          # tests unitarios (node:test via tsx)
+npm run build:skill  # compila y regenera los programas del skill (.claude/skills/a11y-audit/bin/)
 npm run dev       # arranca el servidor MCP por stdio con tsx
 ```
 
@@ -102,7 +107,10 @@ src/report/    informe HTML visual (esquema de la revisión, render, CLI)
 src/color/     luminancia, contraste, composición alfa
 src/rules/     resolución de fondos por orden de pintado y reglas
 src/audit.ts   punto de entrada compartido
-src/server.ts  servidor MCP
-src/cli.ts     ejecución local
-.claude/skills/a11y-audit/SKILL.md   orquestación en Claude Code
+src/server.ts  servidor MCP (solo desarrollo; el skill no lo necesita)
+src/cli.ts     auditoría por terminal
+src/contrast-cli.ts            contraste por terminal (lo usan los agentes del skill)
+src/configure-cli.ts           guarda el token de Figma sin pasar por el chat
+scripts/build-skill.mjs        empaqueta src/ en .claude/skills/a11y-audit/bin/ (npm run build:skill)
+.claude/skills/a11y-audit/     el skill que se distribuye: SKILL.md, references/, componentes/, scripts/, bin/
 ```

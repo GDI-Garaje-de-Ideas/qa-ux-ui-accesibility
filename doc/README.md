@@ -20,6 +20,7 @@ Le pasas a Claude un enlace a una pantalla de Figma y te devuelve un **informe d
 | 8 | [Servidor MCP y skill](08-servidor-mcp-y-skill.md) | Las herramientas que exponemos a Claude y cómo las orquesta `/a11y-audit` | 15 min |
 | 9 | [Herramientas y tecnologías](09-herramientas.md) | Todo lo que usamos y para qué sirve cada cosa | 10 min |
 | 10 | [Tareas habituales y glosario](10-tareas-habituales.md) | Recetas paso a paso (añadir una regla, depurar un frame…) y vocabulario | consulta |
+| 11 | [Distribuir el skill](11-distribuir-skill.md) | Cómo se reparte para que otra persona solo copie una carpeta y ejecute `/a11y-audit` | 10 min |
 
 Si solo tienes 10 minutos, lee el 1 y el 2.
 
@@ -27,7 +28,8 @@ Si solo tienes 10 minutos, lee el 1 y el 2.
 
 ```
 .
-├── .claude/skills/a11y-audit/SKILL.md   ← instrucciones que sigue Claude en /a11y-audit
+├── .claude/skills/a11y-audit/           ← el skill que se distribuye (SKILL.md, bin/, scripts/…)
+├── INSTALAR.md                          ← guía para quien usa el skill
 ├── .mcp.json                            ← qué servidores MCP arranca Claude Code
 ├── CLAUDE.md                            ← reglas del proyecto para Claude
 ├── README.md                            ← resumen de uso

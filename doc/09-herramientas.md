@@ -14,7 +14,8 @@
 
 | Script | Qué hace |
 |---|---|
-| `npm run build` | Compila `src/` a `dist/`. **Obligatorio** antes de usar el servidor desde Claude Code. |
+| `npm run build` | Compila `src/` a `dist/`. **Obligatorio** antes de usar el servidor desde el `.mcp.json` de desarrollo. |
+| `npm run build:skill` | Compila y empaqueta con **esbuild** los programas autónomos del skill (`.claude/skills/a11y-audit/bin/`). |
 | `npm test` | Ejecuta todos los `*.test.ts` con `node:test`. |
 | `npm run dev` | Arranca el servidor MCP desde `src/`, sin compilar. |
 | `npm run audit -- <enlace> [--level AAA] [--json]` | Auditoría desde la terminal. |
@@ -44,7 +45,7 @@ Y ninguna más en producción, a propósito: menos dependencias significa menos 
 |---|---|
 | **Extensión de VS Code** | Donde escribes `/a11y-audit` y ves las respuestas. |
 | **`.mcp.json`** | Qué servidores MCP arrancar en este proyecto. |
-| **Skill** (`.claude/skills/a11y-audit/SKILL.md`) | El procedimiento de auditoría. |
+| **Skill** (`.claude/skills/a11y-audit/`) | El procedimiento de auditoría y sus programas. Se distribuye copiando la carpeta (ver capítulo 11). |
 | **`CLAUDE.md`** | Reglas del proyecto que Claude sigue siempre. |
 | **`/mcp`** | Comando para ver, conectar o reconectar servidores MCP. Úsalo tras cada `npm run build`. |
 

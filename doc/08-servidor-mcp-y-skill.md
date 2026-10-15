@@ -47,6 +47,9 @@ Este servidor tiene también herramientas que **escriben** en Figma (`use_figma`
 
 ## 8.3 El skill `/a11y-audit` (`.claude/skills/a11y-audit/SKILL.md`)
 
+El skill tiene dos modos. En el **modo frame** audita una pantalla, como se describe abajo. En el **modo flujo**, si el enlace es una página, pregunta qué flujo (sección) analizar y qué pantallas, las audita en paralelo por tandas con agentes que siguen `references/auditar-pantalla.md` y el criterio fijo de `references/gravedad.md`, aprende los componentes repetidos en `.a11y-audit/componentes/<fileKey>.md` del proyecto y termina con un índice HTML del flujo (`scripts/indice.mjs`). El skill no usa el servidor MCP de este repositorio: mide con los programas autónomos de su carpeta `bin/`, que dan el mismo resultado. El servidor de la sección 8.1 queda para desarrollo. El detalle está en el [capítulo 11](11-distribuir-skill.md).
+
+
 La cabecera (*frontmatter*) define el nombre, cuándo debe usarse y **qué herramientas tiene permitidas** (`allowed-tools`). El cuerpo son las instrucciones, en cuatro secciones:
 
 ### Sección 0: parámetros

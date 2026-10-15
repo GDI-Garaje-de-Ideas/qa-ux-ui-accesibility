@@ -143,7 +143,7 @@ Cada `Finding` trae lo necesario para localizar y arreglar el problema:
 1. Modifica `engine.ts` (o `background.ts`).
 2. **Añade un caso** en `src/rules/engine.test.ts` con un árbol sintético que lo demuestre.
 3. Mantén sincronizados `RULES`, el `README.md` y el `SKILL.md`.
-4. `npm test` y `npm run build`.
+4. `npm test`, `npm run build` y `npm run build:skill`.
 
 Hay una receta completa en [Tareas habituales](10-tareas-habituales.md).
 

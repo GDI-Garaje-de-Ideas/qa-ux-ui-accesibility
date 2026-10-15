@@ -13,7 +13,13 @@ if (!file) {
   process.exit(2);
 }
 
-const review = JSON.parse(await readFile(file, "utf8"));
-const r = await buildHtmlReport(review, { outDir });
+let r: Awaited<ReturnType<typeof buildHtmlReport>>;
+try {
+  const review = JSON.parse(await readFile(file, "utf8"));
+  r = await buildHtmlReport(review, { outDir });
+} catch (err) {
+  console.error(err instanceof Error ? err.message : String(err));
+  process.exit(2);
+}
 console.log(`Informe HTML: ${r.path}`);
 if (!r.hasScreenshot) console.log(`Sin captura: ${r.screenshotError}`);
